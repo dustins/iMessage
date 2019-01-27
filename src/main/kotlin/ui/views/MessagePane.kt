@@ -1,11 +1,14 @@
 package ui.views
 
 import javafx.application.Platform
+import javafx.geometry.HPos
+import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import tornadofx.*
 import ui.controllers.MessagesController
 import ui.controllers.SearchOpenedEvent
 import utils.highlight
+import javax.swing.GroupLayout
 
 class MessagePane : View("MessagePane") {
 
@@ -13,10 +16,17 @@ class MessagePane : View("MessagePane") {
     private val filteredMessages = SortedFilteredList(controller.messageList)
 
     override val root = vbox {
-        listview(filteredMessages) {
-            cellFormat {
-                graphic = highlight(it, controller.searchTerm.valueSafe)
+        hbox {
+            label {
+                text = "Family"
+                style {
+                    fontSize = 24.px
+                    fontFamily = "Helvetica"
+                }
             }
+            alignment = Pos.CENTER
+        }
+        listview(filteredMessages) {
             vgrow = Priority.ALWAYS
         }
 
