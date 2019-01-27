@@ -7,10 +7,12 @@ import org.jetbrains.exposed.dao.IntIdTable
 
 object Messages : IntIdTable("message", "ROWID") {
     val text = text("text").nullable()
+    val date = integer("date")
 }
 
 class Message(rowid: EntityID<Int>) : IntEntity(rowid) {
     companion object : IntEntityClass<Message>(Messages)
 
     var text by Messages.text
+    var date by Messages.date
 }
