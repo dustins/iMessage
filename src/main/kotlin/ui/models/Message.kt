@@ -7,7 +7,7 @@ import org.jetbrains.exposed.dao.IntIdTable
 
 object Messages : IntIdTable("message", "ROWID") {
     val text = text("text").nullable()
-    val date = integer("date")
+    val date = long("date")
 }
 
 class Message(rowid: EntityID<Int>) : IntEntity(rowid) {
