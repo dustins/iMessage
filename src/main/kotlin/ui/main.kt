@@ -2,15 +2,13 @@ package ui
 
 import javafx.geometry.Side
 import javafx.scene.control.TabPane
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import tornadofx.*
 import ui.controllers.MessagesController
 import ui.controllers.SettingsController
-import ui.models.ChatMessageJoin
-import ui.models.Message
+import ui.models.ChatMessageJoins
+import ui.models.Messages
 import ui.views.MessagePane
 import ui.views.SettingsPane
 import java.sql.Connection
@@ -57,23 +55,21 @@ fun fetch(dblocation: String): List<String> {
     return transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
         addLogger(StdOutSqlLogger)
 
-        // Get the most recent chat:
-        // select chat_id from chat_message_join order by message_date desc limit 1;
-        val chatID = ChatMessageJoin.all().last().chatID
-        println(chatID)
+        // Get the latest chatID
+        val chatID = ChatMessageJoins
+            .selectAll()
+            .orderBy(ChatMessageJoins.id to false) // Ordering by id instead of date for speed
+            .limit(1)
+            .first()[ChatMessageJoins.chatID]
 
-        // Get all the message IDs associated with that chat_id:
-        // select message_id from chat_message_join where chat_id = 259 order by message_date desc limit 10;
-        val messageIDs = ChatMessageJoin.all()
-            .filter { it.chatID == chatID }
-            .map { it.messageID }
-            .toSet()
-
-        // Get all the messages for that chat
-        Message
-            .all()
-            .filter { messageIDs.contains(it.id.value) }
-            .map { it.text?:"<no text>"}
+        // Get all the messages associated with that chatID
+        Messages
+            .innerJoin(ChatMessageJoins, { Messages.id }, { ChatMessageJoins.messageID })
+            .selectAll()
+            .andWhere {
+                ChatMessageJoins.chatID eq chatID
+            }
+            .map { it[Messages.text] ?: "<no text>" }
     }
 }
 
