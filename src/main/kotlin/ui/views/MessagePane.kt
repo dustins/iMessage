@@ -9,15 +9,14 @@ import ui.controllers.SearchOpenedEvent
 import ui.styles.MessageStyle
 
 
-class MessagePane : View("MessagePane") {
+class MessagePane : View("Messages") {
 
     private val controller: MessagesController by inject()
     private val filteredMessages = SortedFilteredList(controller.messageList)
 
     override val root = vbox {
         hbox {
-            label {
-                text = "Family"
+            label(controller.chatName) {
                 style {
                     fontSize = 24.px
                     fontFamily = "Helvetica"
@@ -29,7 +28,7 @@ class MessagePane : View("MessagePane") {
             vgrow = Priority.ALWAYS
             cellFormat {
                 graphic = vbox {
-                    label(getName(it.handleID)) {
+                    label(it.handleID.toString()) {
                         isVisible = !it.isFromMe
                         isManaged = !it.isFromMe
                     }
@@ -63,17 +62,6 @@ class MessagePane : View("MessagePane") {
 
         paddingAll = 10.0
         spacing = 4.0
-    }
-}
-
-fun getName(h: Int): String {
-    return when (h) {
-        0 -> "Me"
-        2 -> "Dad"
-        4 -> "Mom"
-        19 -> "Lisa"
-        228 -> "Makayla"
-        else -> "Sommer"
     }
 }
 
