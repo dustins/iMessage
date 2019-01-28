@@ -1,5 +1,6 @@
 package ui
 
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.geometry.Side
 import javafx.scene.control.TabPane
 import org.jetbrains.exposed.sql.*
@@ -36,14 +37,19 @@ class Fetch : View("Fetch") {
 
     val settings: SettingsController by inject()
     val messageController: MessagesController by inject()
+    val chatId = SimpleIntegerProperty()
 
     override val root = vbox {
+        textfield(chatId) {
+            prefWidth = 300.0
+        }
         button {
             text = "Fetch Messages"
             action {
                 runAsync {
-                    fetch(settings.dblocation.valueSafe)
+                    fetch(settings.dblocation.valueSafe, chatId.value)
                 } ui {
+                    messageController.messageList.clear()
                     messageController.messageList.addAll(it)
                 }
             }
@@ -51,18 +57,18 @@ class Fetch : View("Fetch") {
     }
 }
 
-fun fetch(dblocation: String): List<Message> {
+fun fetch(dblocation: String, chatID: Int): List<Message> {
     Database.connect("jdbc:sqlite:$dblocation", "org.sqlite.JDBC")
 
     return transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
         addLogger(StdOutSqlLogger)
 
-        // Get the latest chatID
-        val chatID = ChatMessageJoins
-            .selectAll()
-            .orderBy(ChatMessageJoins.id to false) // Ordering by id instead of date for speed
-            .limit(1)
-            .first()[ChatMessageJoins.chatID]
+//        // Get the latest chatID
+//        val chatID = ChatMessageJoins
+//            .selectAll()
+//            .orderBy(ChatMessageJoins.id to false) // Ordering by id instead of date for speed
+//            .limit(1)
+//            .first()[ChatMessageJoins.chatID]
 
         // Get all the messages associated with that chatID
         Messages
