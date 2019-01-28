@@ -8,6 +8,7 @@ import tornadofx.*
 import ui.controllers.MessagesController
 import ui.controllers.SettingsController
 import ui.models.ChatMessageJoins
+import ui.models.Message
 import ui.models.Messages
 import ui.views.MessagePane
 import ui.views.SettingsPane
@@ -49,7 +50,7 @@ class Fetch : View("Fetch") {
     }
 }
 
-fun fetch(dblocation: String): List<String> {
+fun fetch(dblocation: String): List<Message> {
     Database.connect("jdbc:sqlite:$dblocation", "org.sqlite.JDBC")
 
     return transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
@@ -66,10 +67,15 @@ fun fetch(dblocation: String): List<String> {
         Messages
             .innerJoin(ChatMessageJoins, { Messages.id }, { ChatMessageJoins.messageID })
             .selectAll()
-            .andWhere {
-                ChatMessageJoins.chatID eq chatID
+            .andWhere { ChatMessageJoins.chatID eq chatID }
+            .map {
+                Message(
+                    it[Messages.text]?:"<no text>",
+                    it[Messages.date],
+                    it[Messages.isFromMe],
+                    it[Messages.handleID]
+                )
             }
-            .map { it[Messages.text] ?: "<no text>" }
     }
 }
 

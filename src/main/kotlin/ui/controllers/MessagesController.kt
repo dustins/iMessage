@@ -7,12 +7,13 @@ import javafx.scene.input.KeyCodeCombination
 import javafx.scene.input.KeyCombination
 import javafx.scene.input.KeyEvent
 import tornadofx.*
+import ui.models.Message
 
 class MessagesController : Controller() {
 
     val searchTerm = SimpleStringProperty()
     val isSearchVisible = SimpleBooleanProperty()
-    val messageList = mutableListOf<String>().observable()
+    val messageList = mutableListOf<Message>().observable()
 
     fun handleKeyPress(keyEvent: KeyEvent) {
         val findMac = KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
