@@ -1,15 +1,13 @@
 package ui.views
 
 import javafx.application.Platform
-import javafx.geometry.HPos
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import tornadofx.*
 import ui.controllers.MessagesController
 import ui.controllers.SearchOpenedEvent
-import utils.highlight
-import java.awt.Color
-import javax.swing.GroupLayout
+import ui.styles.MessageStyle
+
 
 class MessagePane : View("MessagePane") {
 
@@ -28,41 +26,24 @@ class MessagePane : View("MessagePane") {
             alignment = Pos.CENTER
         }
         listview(filteredMessages) {
+            vgrow = Priority.ALWAYS
             cellFormat {
-                graphic = cache {
+                graphic = vbox {
+                    label(getName(it.handleID)) {
+                        isVisible = !it.isFromMe
+                        isManaged = !it.isFromMe
+                    }
                     hbox {
-                        vbox {
-                            vbox {
-                                label(getName(it.handleID)) {
-                                    style {
-                                        fontSize = 10.px
-                                        textFill = if (it.isFromMe) c("white") else c("black")
-                                    }
-                                }
-                                paddingBottom = 2.0
-                            }
-                            label(it.text) {
-                                style {
-                                    textFill = if (it.isFromMe) c("white") else c("black")
-                                }
-                            }
-                            style {
-                                backgroundRadius += box(15.px)
-                                backgroundColor += if (it.isFromMe) c(24, 112, 246) else c(223, 223, 223)
-                            }
-                            paddingAll = 5.0
-                        }
-                        maxWidth = 300.0
-                        alignment = if (it.isFromMe) {
-                            Pos.CENTER_RIGHT
-                        } else {
-                            Pos.CENTER_LEFT
+                        alignment = if (it.isFromMe) Pos.CENTER_RIGHT else Pos.CENTER_LEFT
+                        label(it.text) {
+                            isWrapText = true
+                            addClass(MessageStyle.message)
+                            if (it.isFromMe) addClass(MessageStyle.fromMe) else addClass(MessageStyle.notFromMe)
                         }
                     }
-
                 }
+
             }
-            vgrow = Priority.ALWAYS
         }
 
         textfield(controller.searchTerm) {
@@ -91,8 +72,8 @@ fun getName(h: Int): String {
         2 -> "Dad"
         4 -> "Mom"
         19 -> "Lisa"
-        228 -> "Sommer"
-        else -> "Makayla"
+        228 -> "Makayla"
+        else -> "Sommer"
     }
 }
 

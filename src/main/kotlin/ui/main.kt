@@ -10,11 +10,12 @@ import ui.controllers.SettingsController
 import ui.models.ChatMessageJoins
 import ui.models.Message
 import ui.models.Messages
+import ui.styles.MessageStyle
 import ui.views.MessagePane
 import ui.views.SettingsPane
 import java.sql.Connection
 
-class Main : App(MainView::class)
+class Main : App(MainView::class, MessageStyle::class)
 
 class MainView : View("iMessage") {
 
@@ -70,7 +71,7 @@ fun fetch(dblocation: String): List<Message> {
             .andWhere { ChatMessageJoins.chatID eq chatID }
             .map {
                 Message(
-                    it[Messages.text]?:"<no text>",
+                    it[Messages.text] ?: "<no text>",
                     it[Messages.date],
                     it[Messages.isFromMe],
                     it[Messages.handleID]
