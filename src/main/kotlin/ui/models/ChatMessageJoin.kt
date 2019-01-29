@@ -1,8 +1,8 @@
 package ui.models
 
-import org.jetbrains.exposed.dao.IntIdTable
+import org.jetbrains.exposed.sql.Table
 
-object ChatMessageJoins : IntIdTable("chat_message_join", "ROWID") {
+object ChatMessageJoins : Table("chat_message_join") {
     val chatID = integer("chat_id")
     val messageID = integer("message_id")
     val date = long("message_date")

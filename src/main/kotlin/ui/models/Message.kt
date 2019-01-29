@@ -9,4 +9,11 @@ object Messages : IntIdTable("message", "ROWID") {
     val handleID = integer("handle_id")
 }
 
-data class Message(val text: String, val date: Long, val isFromMe: Boolean, val handleID: Int)
+data class Message(
+    val text: String?,
+    val date: Long,
+    val isFromMe: Boolean,
+    val contactInfo: String?,
+    val filename: String?,
+    val mimeType: String?
+)

@@ -28,13 +28,13 @@ class MessagePane : View("Messages") {
             vgrow = Priority.ALWAYS
             cellFormat {
                 graphic = vbox {
-                    label(it.handleID.toString()) {
+                    label(it.contactInfo?:"") {
                         isVisible = !it.isFromMe
                         isManaged = !it.isFromMe
                     }
                     hbox {
                         alignment = if (it.isFromMe) Pos.CENTER_RIGHT else Pos.CENTER_LEFT
-                        label(it.text) {
+                        label(it.text ?: "<no text>") {
                             isWrapText = true
                             addClass(MessageStyle.message)
                             if (it.isFromMe) addClass(MessageStyle.fromMe) else addClass(MessageStyle.notFromMe)
@@ -50,7 +50,7 @@ class MessagePane : View("Messages") {
                 Platform.runLater { requestFocus() }
             }
             filteredMessages.filterWhen(textProperty()) { query, item ->
-                item.text.contains(query, true)
+                item.text?.contains(query, true) ?: false
             }
             managedProperty().bind(visibleProperty())
             visibleWhen(controller.isSearchVisible)

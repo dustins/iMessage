@@ -2,9 +2,7 @@ package adaptors
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import ui.models.ChatMessageJoins
-import ui.models.Message
-import ui.models.Messages
+import ui.models.*
 import java.sql.Connection
 
 fun fetchFromDB(chatID: Int, messageDB: String): List<Message> {
@@ -13,18 +11,28 @@ fun fetchFromDB(chatID: Int, messageDB: String): List<Message> {
     return transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
         addLogger(StdOutSqlLogger)
 
-        // Get all the messages associated with that chatID
         Messages
-            .innerJoin(ChatMessageJoins, { id }, { messageID })
+            .leftJoin(Handle, { Messages.handleID }, { Handle.id })
+            .innerJoin(ChatMessageJoins, { Messages.id }, { ChatMessageJoins.messageID })
+            .leftJoin(AttachmentMessageJoin, { Messages.id }, { AttachmentMessageJoin.messageID })
+            .leftJoin(Attachments, { AttachmentMessageJoin.attachmentID }, { Attachments.id })
             .selectAll()
             .andWhere { ChatMessageJoins.chatID eq chatID }
-            .map {
-                Message(
-                    it[Messages.text] ?: "<no text>",
-                    it[Messages.date],
-                    it[Messages.isFromMe],
-                    it[Messages.handleID]
-                )
-            }
+            .map { dbToMessage(it) }
     }
+}
+
+fun dbToMessage(dbRow: ResultRow): Message {
+    return Message(
+        text = dbRow[Messages.text],
+        date = dbRow[Messages.date],
+        isFromMe = dbRow[Messages.isFromMe],
+        contactInfo = dbRow[Handle.contactInfo],
+        filename = dbRow[Attachments.filename],
+        mimeType = dbRow[Attachments.mimetype]
+    )
+}
+
+fun main() {
+    fetchFromDB(259, "/Users/Kevin/Desktop/chat.db").forEach { println(it) }
 }
