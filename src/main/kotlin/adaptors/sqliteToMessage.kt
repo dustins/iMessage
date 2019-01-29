@@ -1,8 +1,8 @@
 package adaptors
 
+import model.Message
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import ui.models.*
 import java.sql.Connection
 
 fun fetchFromDB(chatID: Int, messageDB: String): List<Message> {

@@ -11,7 +11,7 @@ import tornadofx.Controller
 import tornadofx.EventBus
 import tornadofx.FXEvent
 import tornadofx.observable
-import ui.models.Message
+import model.Message
 
 class MessagesController : Controller() {
 
