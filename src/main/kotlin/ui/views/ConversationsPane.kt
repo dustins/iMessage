@@ -15,9 +15,10 @@ class ConversationsPane : View("Conversations") {
     }
 
     override val root = vbox {
+        prefWidth = 100.0
         listview(chatIDs) {
             onUserSelect {
-                messageController.fetch(it)
+                messageController.loadChat(it)
             }
             vgrow = Priority.ALWAYS
         }

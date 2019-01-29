@@ -11,7 +11,14 @@ class SettingsPane : View("Settings") {
         vbox {
             label("Chat DB File Location")
             hbox {
-                textfield(settings.dblocation) {
+                textfield(settings.messageDB) {
+                    prefWidth = 300.0
+                }
+                paddingBottom = 10.0
+            }
+            label("Address Book DB File Location")
+            hbox {
+                textfield(settings.messageDB) {
                     prefWidth = 300.0
                 }
                 paddingBottom = 10.0
