@@ -1,11 +1,9 @@
 package ui.views
 
-import javafx.application.Platform
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import tornadofx.*
 import ui.controllers.MessagesController
-import ui.controllers.SearchOpenedEvent
 import ui.styles.MessageStyle
 import utils.getImage
 
@@ -13,7 +11,6 @@ import utils.getImage
 class MessagePane : View("Messages") {
 
     private val controller: MessagesController by inject()
-    private val filteredMessages = SortedFilteredList(controller.messageList)
 
     override val root = vbox {
         hbox {
@@ -25,7 +22,7 @@ class MessagePane : View("Messages") {
             }
             alignment = Pos.CENTER
         }
-        listview(filteredMessages) {
+        listview(controller.messageList) {
             vgrow = Priority.ALWAYS
             cellFormat {
                 graphic = vbox {
@@ -54,21 +51,6 @@ class MessagePane : View("Messages") {
                 }
 
             }
-        }
-
-        textfield(controller.searchTerm) {
-            subscribe<SearchOpenedEvent> {
-                Platform.runLater { requestFocus() }
-            }
-            filteredMessages.filterWhen(textProperty()) { query, item ->
-                item.text?.contains(query, true) ?: false
-            }
-            managedProperty().bind(visibleProperty())
-            visibleWhen(controller.isSearchVisible)
-        }
-
-        setOnKeyPressed {
-            controller.handleKeyPress(it)
         }
 
         paddingAll = 10.0
