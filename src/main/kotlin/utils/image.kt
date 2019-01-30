@@ -35,6 +35,7 @@ class ImageLoader {
             return placeholderImage
         }
 
+        logger.info("Loading file: $file")
         return Image(file.toURI().toString())
     }
 }

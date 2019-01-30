@@ -20,12 +20,14 @@ class MessageCell(message: Message) : View("Message") {
                 Pos.CENTER_LEFT
             }
 
-            label(message.text ?: "") {
+            label {
                 if (message.hasImage()) {
                     graphic = imageview(ImageLoader().load(message.attachment.filename)) {
                         fitWidth = 300.0
                         isPreserveRatio = true
                     }
+                } else {
+                    text = message.text
                 }
 
                 isWrapText = true
