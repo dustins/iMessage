@@ -35,9 +35,9 @@ class MessagePane : View("Messages") {
                     hbox {
                         alignment = if (it.isFromMe) Pos.CENTER_RIGHT else Pos.CENTER_LEFT
                         label(it.text ?: "") {
-                            if (it.mimeType?.contains("image") == true) {
+                            if (it.attachment.mimeType?.contains("image") == true) {
                                 graphic = vbox {
-                                    imageview(getImage(it.filename!!)) {
+                                    imageview(getImage(it.attachment.filename!!)) {
                                         fitWidth = 300.0
                                         isPreserveRatio = true
                                     }

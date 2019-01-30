@@ -1,5 +1,6 @@
 package adaptors
 
+import model.Attachment
 import model.Message
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -28,8 +29,10 @@ fun dbToMessage(dbRow: ResultRow): Message {
         date = dbRow[Messages.date],
         isFromMe = dbRow[Messages.isFromMe],
         contactInfo = dbRow[Handle.contactInfo],
-        filename = dbRow[Attachments.filename],
-        mimeType = dbRow[Attachments.mimetype]
+        attachment = Attachment(
+            filename = dbRow[Attachments.filename],
+            mimeType = dbRow[Attachments.mimetype]
+        )
     )
 }
 
