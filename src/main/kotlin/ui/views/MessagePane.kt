@@ -7,6 +7,7 @@ import tornadofx.*
 import ui.controllers.MessagesController
 import ui.controllers.SearchOpenedEvent
 import ui.styles.MessageStyle
+import utils.getImage
 
 
 class MessagePane : View("Messages") {
@@ -28,13 +29,23 @@ class MessagePane : View("Messages") {
             vgrow = Priority.ALWAYS
             cellFormat {
                 graphic = vbox {
-                    label(it.contactInfo?:"") {
-                        isVisible = !it.isFromMe
+                    label(it.contactInfo ?: "") {
                         isManaged = !it.isFromMe
                     }
                     hbox {
                         alignment = if (it.isFromMe) Pos.CENTER_RIGHT else Pos.CENTER_LEFT
-                        label(it.text ?: "<no text>") {
+                        label(it.text ?: "") {
+                            if (it.mimeType?.contains("image") == true) {
+                                graphic = vbox {
+                                    imageview(getImage(it.filename!!)) {
+                                        fitWidth = 300.0
+                                        isPreserveRatio = true
+                                    }
+                                    label(it.text ?: "") {
+                                        isWrapText = true
+                                    }
+                                }
+                            }
                             isWrapText = true
                             addClass(MessageStyle.message)
                             if (it.isFromMe) addClass(MessageStyle.fromMe) else addClass(MessageStyle.notFromMe)
