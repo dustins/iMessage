@@ -1,4 +1,4 @@
-package adaptors
+package db
 
 import model.Attachment
 import model.Message
@@ -34,8 +34,4 @@ fun dbToMessage(dbRow: ResultRow): Message {
             mimeType = dbRow[Attachments.mimetype]
         )
     )
-}
-
-fun main() {
-    fetchFromDB(259, "/Users/Kevin/Desktop/chat.db").forEach { println(it) }
 }

@@ -1,6 +1,6 @@
 package ui.controllers
 
-import adaptors.fetchFromDB
+import db.fetchFromDB
 import javafx.beans.property.SimpleStringProperty
 import model.Message
 import tornadofx.Controller

@@ -1,4 +1,4 @@
-package adaptors
+package db
 
 import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.Table

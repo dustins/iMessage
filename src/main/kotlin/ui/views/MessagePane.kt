@@ -31,4 +31,3 @@ class MessagePane : View("Messages") {
         spacing = 4.0
     }
 }
-
