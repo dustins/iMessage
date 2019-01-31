@@ -18,7 +18,7 @@ class SettingsPane : View("Settings") {
             }
             label("Address Book DB File Location")
             hbox {
-                textfield(settings.messageDB) {
+                textfield(settings.addressDB) {
                     prefWidth = 300.0
                 }
                 paddingBottom = 10.0

@@ -45,4 +45,5 @@ macAppBundle {
     icon = "branding/icon.icns"
     bundleJRE = true
     backgroundImage = "branding/sample.png"
+    appName = "iMessage"
 }
