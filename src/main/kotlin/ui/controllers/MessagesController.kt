@@ -1,6 +1,6 @@
 package ui.controllers
 
-import db.fetchFromDB
+import db.fetchMessages
 import javafx.beans.property.SimpleStringProperty
 import model.Message
 import tornadofx.Controller
@@ -16,7 +16,7 @@ class MessagesController : Controller() {
         chatName.value = chatID.toString()
         messageList.clear()
         runAsync {
-            fetchFromDB(chatID, settings.messageDB.valueSafe)
+            fetchMessages(chatID, settings.messageDB.valueSafe)
         } ui {
             messageList.addAll(it)
         }
