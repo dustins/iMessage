@@ -1,12 +1,11 @@
 package db
 
-import model.Attachment
-import model.Message
+import model.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 
-fun fetchMessages(chatID: Int, messageDB: String): List<Message> {
+fun fetchMessages(messageDB: String, conversation: Conversation): List<Message> {
     Database.connect("jdbc:sqlite:$messageDB", "org.sqlite.JDBC")
 
     return transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
@@ -18,17 +17,17 @@ fun fetchMessages(chatID: Int, messageDB: String): List<Message> {
             .leftJoin(AttachmentMessageJoin, { Messages.id }, { AttachmentMessageJoin.messageID })
             .leftJoin(Attachments, { AttachmentMessageJoin.attachmentID }, { Attachments.id })
             .selectAll()
-            .andWhere { ChatMessageJoin.chatID eq chatID }
-            .map { dbToMessage(it) }
+            .andWhere { ChatMessageJoin.chatID eq conversation.id }
+            .map { dbToMessage(it, conversation.contacts) }
     }
 }
 
-fun dbToMessage(dbRow: ResultRow): Message {
+fun dbToMessage(dbRow: ResultRow, contacts: List<Contact>): Message {
     return Message(
         text = dbRow[Messages.text],
         date = dbRow[Messages.date],
         isFromMe = dbRow[Messages.isFromMe],
-        contactInfo = dbRow[Handles.contactInfo],
+        contact = contacts.lookup(dbRow[Handles.contactInfo]),
         attachment = Attachment(
             filename = dbRow[Attachments.filename],
             mimeType = dbRow[Attachments.mimetype]

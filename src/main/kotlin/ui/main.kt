@@ -1,10 +1,13 @@
 package ui
 
-import tornadofx.*
+import tornadofx.App
+import tornadofx.View
+import tornadofx.borderpane
+import tornadofx.launch
 import ui.styles.MessageStyle
+import ui.views.AppMenuBar
 import ui.views.ConversationsPane
 import ui.views.MessagePane
-import ui.views.AppMenuBar
 
 class Main : App(MainView::class, MessageStyle::class)
 
