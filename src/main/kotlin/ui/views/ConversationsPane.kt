@@ -1,27 +1,27 @@
 package ui.views
 
 import javafx.scene.layout.Priority
+import model.displayName
 import tornadofx.*
-import ui.controllers.ContactsController
+import ui.controllers.ConversationController
 import ui.controllers.MessagesController
 
 class ConversationsPane : View("Conversations") {
-    val chatIDs = mutableListOf<Int>().observable()
-    val messageController: MessagesController by inject()
-    val contacts: ContactsController by inject()
+    private val messageController: MessagesController by inject()
+    private val controller: ConversationController by inject()
 
     init {
-        contacts.loadContacts()
-        for (i in 1..100) {
-            chatIDs.add(i)
-        }
+        controller.loadConversations()
     }
 
     override val root = vbox {
         prefWidth = 100.0
-        listview(chatIDs) {
+        listview(controller.conversations) {
+            cellFormat {
+                text = it.contacts.joinToString { contact -> contact.displayName() }
+            }
             onUserSelect {
-                messageController.loadChat(it)
+                messageController.loadConversation(it)
             }
             vgrow = Priority.ALWAYS
         }

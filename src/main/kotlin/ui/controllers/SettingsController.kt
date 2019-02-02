@@ -1,7 +1,7 @@
 package ui.controllers
 
 import javafx.beans.property.SimpleStringProperty
-import tornadofx.*
+import tornadofx.Controller
 
 class SettingsController : Controller() {
     val messageDB = SimpleStringProperty("/Users/Kevin/Desktop/chat.db")

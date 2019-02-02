@@ -19,6 +19,11 @@ object ChatMessageJoin : Table("chat_message_join") {
     val date = long("message_date")
 }
 
+object ChatHandleJoin : Table("chat_handle_join") {
+    val chatID = integer("chat_id")
+    val handleID = integer("handle_id")
+}
+
 object Handles : IntIdTable("handle", "ROWID") {
     val contactInfo = text("id")
 }

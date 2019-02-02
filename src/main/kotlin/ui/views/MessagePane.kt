@@ -2,6 +2,9 @@ package ui.views
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import model.Contact
+import model.displayName
+import model.lookup
 import tornadofx.*
 import ui.controllers.MessagesController
 
@@ -12,7 +15,7 @@ class MessagePane : View("Messages") {
 
     override val root = vbox {
         hbox {
-            label(controller.chatName) {
+            label(controller.displayName) {
                 style {
                     fontSize = 24.px
                     fontFamily = "Helvetica"
