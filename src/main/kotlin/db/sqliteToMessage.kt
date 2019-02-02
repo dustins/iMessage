@@ -13,12 +13,12 @@ fun fetchMessages(chatID: Int, messageDB: String): List<Message> {
         addLogger(StdOutSqlLogger)
 
         Messages
-            .leftJoin(Handle, { Messages.handleID }, { Handle.id })
-            .innerJoin(ChatMessageJoins, { Messages.id }, { ChatMessageJoins.messageID })
+            .leftJoin(Handles, { Messages.handleID }, { Handles.id })
+            .innerJoin(ChatMessageJoin, { Messages.id }, { ChatMessageJoin.messageID })
             .leftJoin(AttachmentMessageJoin, { Messages.id }, { AttachmentMessageJoin.messageID })
             .leftJoin(Attachments, { AttachmentMessageJoin.attachmentID }, { Attachments.id })
             .selectAll()
-            .andWhere { ChatMessageJoins.chatID eq chatID }
+            .andWhere { ChatMessageJoin.chatID eq chatID }
             .map { dbToMessage(it) }
     }
 }
@@ -28,7 +28,7 @@ fun dbToMessage(dbRow: ResultRow): Message {
         text = dbRow[Messages.text],
         date = dbRow[Messages.date],
         isFromMe = dbRow[Messages.isFromMe],
-        contactInfo = dbRow[Handle.contactInfo],
+        contactInfo = dbRow[Handles.contactInfo],
         attachment = Attachment(
             filename = dbRow[Attachments.filename],
             mimeType = dbRow[Attachments.mimetype]

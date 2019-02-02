@@ -4,28 +4,28 @@ import org.jetbrains.exposed.dao.IntIdTable
 import org.jetbrains.exposed.sql.Table
 
 object Attachments : IntIdTable("attachment", "ROWID") {
-    val filename = Attachments.text("filename").nullable()
-    val mimetype = Attachments.text("mime_type").nullable()
+    val filename = text("filename").nullable()
+    val mimetype = text("mime_type").nullable()
 }
 
 object AttachmentMessageJoin : Table("message_attachment_join") {
-    val attachmentID = AttachmentMessageJoin.integer("attachment_id")
-    val messageID = AttachmentMessageJoin.integer("message_id")
+    val attachmentID = integer("attachment_id")
+    val messageID = integer("message_id")
 }
 
-object ChatMessageJoins : Table("chat_message_join") {
-    val chatID = ChatMessageJoins.integer("chat_id")
-    val messageID = ChatMessageJoins.integer("message_id")
-    val date = ChatMessageJoins.long("message_date")
+object ChatMessageJoin : Table("chat_message_join") {
+    val chatID = integer("chat_id")
+    val messageID = integer("message_id")
+    val date = long("message_date")
 }
 
-object Handle : IntIdTable("handle", "ROWID") {
-    val contactInfo = Handle.text("id")
+object Handles : IntIdTable("handle", "ROWID") {
+    val contactInfo = text("id")
 }
 
 object Messages : IntIdTable("message", "ROWID") {
-    val text = Messages.text("text").nullable()
-    val date = Messages.long("date")
-    val isFromMe = Messages.bool("is_from_me")
-    val handleID = Messages.integer("handle_id")
+    val text = text("text").nullable()
+    val date = long("date")
+    val isFromMe = bool("is_from_me")
+    val handleID = integer("handle_id")
 }
