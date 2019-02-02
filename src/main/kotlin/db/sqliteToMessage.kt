@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 
-fun fetchFromDB(chatID: Int, messageDB: String): List<Message> {
+fun fetchMessages(chatID: Int, messageDB: String): List<Message> {
     Database.connect("jdbc:sqlite:$messageDB", "org.sqlite.JDBC")
 
     return transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {

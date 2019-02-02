@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 
-fun fetchFromDB(addressDB: String): List<Contact> {
+fun fetchContacts(addressDB: String): List<Contact> {
     Database.connect("jdbc:sqlite:$addressDB", "org.sqlite.JDBC")
 
     val contacts = mutableMapOf<Int, Contact>()
@@ -28,15 +28,14 @@ fun fetchFromDB(addressDB: String): List<Contact> {
                     )
                 }
 
-                contacts[key]!!.email.add(it[EmailAddress.address])
-                contacts[key]!!.number.add(it[PhoneNumber.fullNumber])
+                if (!it[EmailAddress.address].isNullOrBlank()) {
+                    contacts[key]!!.email.add(it[EmailAddress.address])
+                }
+                if (!it[PhoneNumber.fullNumber].isNullOrBlank()) {
+                    contacts[key]!!.number.add(it[PhoneNumber.fullNumber])
+                }
             }
     }
 
     return contacts.values.toList()
-}
-
-fun main() {
-    fetchFromDB("/Users/Kevin/Desktop/address.db")
-        .forEach { println(it) }
 }

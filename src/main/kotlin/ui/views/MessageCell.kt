@@ -3,14 +3,20 @@ package ui.views
 import javafx.geometry.Pos
 import model.Message
 import tornadofx.*
+import ui.controllers.ContactsController
 import ui.styles.MessageStyle
 import utils.ImageLoader
 import utils.hasImage
 
 class MessageCell(message: Message) : View("Message") {
 
+    val contacts: ContactsController by inject()
+
     override val root = vbox {
-        label(message.contactInfo ?: "") {
+        label {
+            if (!message.contactInfo.isNullOrBlank()) {
+                text = contacts.find(message.contactInfo)?.firstName?:message.contactInfo
+            }
             isManaged = !message.isFromMe
         }
         hbox {
