@@ -17,25 +17,29 @@ fun fetchContacts(addressDB: String): List<Contact> {
             .leftJoin(EmailAddress, { Name.id }, { EmailAddress.owner })
             .leftJoin(PhoneNumber, { Name.id }, { PhoneNumber.owner })
             .selectAll()
-            .forEach {
-                val key = it[Name.id].value
-                if (!contacts.containsKey(key)) {
-                    contacts[key] = Contact (
-                        firstName = it[Name.firstName],
-                        lastName = it[Name.lastName],
-                        email = mutableListOf(),
-                        number = mutableListOf()
-                    )
-                }
-
-                if (!it[EmailAddress.address].isNullOrBlank()) {
-                    contacts[key]!!.email.add(it[EmailAddress.address])
-                }
-                if (!it[PhoneNumber.fullNumber].isNullOrBlank()) {
-                    contacts[key]!!.number.add(it[PhoneNumber.fullNumber])
-                }
-            }
+            .forEach { mapContact(contacts, it) }
     }
 
     return contacts.values.toList()
 }
+
+@Suppress("UselessCallOnNotNull") // db results can definitely be null
+fun mapContact(contacts: MutableMap<Int, Contact>, dbRow: ResultRow) {
+    val key = dbRow[Name.id].value
+    if (!contacts.containsKey(key)) {
+        contacts[key] = Contact (
+            firstName = dbRow[Name.firstName],
+            lastName = dbRow[Name.lastName],
+            email = mutableListOf(),
+            number = mutableListOf()
+        )
+    }
+
+    if (!dbRow[EmailAddress.address].isNullOrBlank()) {
+        contacts[key]!!.email.add(dbRow[EmailAddress.address])
+    }
+    if (!dbRow[PhoneNumber.fullNumber].isNullOrBlank()) {
+        contacts[key]!!.number.add(dbRow[PhoneNumber.fullNumber])
+    }
+}
+
