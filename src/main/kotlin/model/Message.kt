@@ -1,8 +1,10 @@
 package model
 
+import java.time.LocalDateTime
+
 data class Message(
     val text: String?,
-    val date: Long,
+    val date: LocalDateTime,
     val isFromMe: Boolean,
     val contact: Contact,
     val attachment: Attachment

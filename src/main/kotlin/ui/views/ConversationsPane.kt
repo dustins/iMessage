@@ -1,7 +1,6 @@
 package ui.views
 
 import javafx.scene.layout.Priority
-import model.displayName
 import tornadofx.*
 import ui.controllers.ConversationController
 import ui.controllers.MessagesController
@@ -15,10 +14,10 @@ class ConversationsPane : View("Conversations") {
     }
 
     override val root = vbox {
-        prefWidth = 100.0
+        prefWidth = 295.0
         listview(controller.conversations) {
             cellFormat {
-                text = it.contacts.joinToString { contact -> contact.displayName() }
+                graphic = ConversationCard(it).root
             }
             onUserSelect {
                 messageController.loadConversation(it)
