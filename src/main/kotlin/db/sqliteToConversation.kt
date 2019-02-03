@@ -2,6 +2,7 @@ package db
 
 import model.Contact
 import model.Conversation
+import model.SampleMessage
 import model.lookup
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -15,7 +16,7 @@ fun fetchConversations(messageDB: String, contacts: List<Contact>): List<Convers
         addLogger(StdOutSqlLogger)
 
         ChatHandleJoin
-            .leftJoin(Handles, {ChatHandleJoin.handleID}, {Handles.id})
+            .leftJoin(Handles, { ChatHandleJoin.handleID }, { Handles.id })
             .selectAll()
             .forEach { mapToConversation(conversations, it, contacts) }
     }
@@ -26,7 +27,8 @@ fun fetchConversations(messageDB: String, contacts: List<Contact>): List<Convers
 fun mapToConversation(conversations: MutableMap<Int, Conversation>, dbRow: ResultRow, contacts: List<Contact>) {
     val key = dbRow[ChatHandleJoin.chatID]
     if (!conversations.containsKey(key)) {
-        conversations[key] = Conversation(key, mutableListOf(), 0)
+        // TODO replace SampleMessage with the real deal
+        conversations[key] = Conversation(key, mutableListOf(), SampleMessage())
     }
 
     if (!dbRow[Handles.contactInfo].isNullOrBlank()) {
