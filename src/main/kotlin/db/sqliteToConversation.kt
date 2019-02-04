@@ -8,21 +8,21 @@ import java.sql.Connection
 fun fetchConversations(messageDB: String, contacts: List<Contact>): List<Conversation> {
     Database.connect("jdbc:sqlite:$messageDB", "org.sqlite.JDBC")
 
-    val conversations = mutableMapOf<Int, Conversation>()
+    val chatIdToContacts = mutableMapOf<Int, MutableList<Contact>>()
     transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
         addLogger(StdOutSqlLogger)
 
         ChatHandleJoin
             .leftJoin(Handles, { ChatHandleJoin.handleID }, { Handles.id })
             .selectAll()
-            .forEach { mapToConversation(conversations, it, contacts) }
+            .forEach { mapToContacts(chatIdToContacts, it, contacts) }
     }
 
     val messages = fetchLastMessageByChat(messageDB, contacts)
 
-    return conversations.values
-        .filter { messages.containsKey(it.id) }
-        .map { Conversation(it.id, it.contacts, messages.getValue(it.id)) }
+    return chatIdToContacts
+        .filter { messages.containsKey(it.key) }
+        .map { Conversation(it.key, it.value, messages.getValue(it.key)) }
         .sortedByDescending { it.lastSentMessage.date }
 }
 
@@ -50,14 +50,12 @@ fun fetchLastMessageByChat(messageDB: String, contacts: List<Contact>): Map<Int,
     return messages
 }
 
-fun mapToConversation(conversations: MutableMap<Int, Conversation>, dbRow: ResultRow, contacts: List<Contact>) {
+@Suppress("UselessCallOnNotNull") // db results can definitely be null
+fun mapToContacts(chatIdToContacts: MutableMap<Int, MutableList<Contact>>, dbRow: ResultRow, contacts: List<Contact>) {
     val key = dbRow[ChatHandleJoin.chatID]
-    if (!conversations.containsKey(key)) {
-        // TODO replace SampleMessage with the real deal
-        conversations[key] = Conversation(key, mutableListOf(), SampleMessage())
-    }
 
     if (!dbRow[Handles.contactInfo].isNullOrBlank()) {
-        conversations[key]!!.contacts.add(contacts.lookup(dbRow[Handles.contactInfo]))
+        chatIdToContacts.putIfAbsent(key, mutableListOf())
+        chatIdToContacts.getValue(key).add(contacts.lookup(dbRow[Handles.contactInfo]))
     }
 }
