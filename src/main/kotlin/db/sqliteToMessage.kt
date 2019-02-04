@@ -27,7 +27,7 @@ fun fetchMessages(messageDB: String, conversation: Conversation): List<Message> 
 
 fun dbToMessage(dbRow: ResultRow, contacts: List<Contact>): Message {
     return Message(
-        text = dbRow[Messages.text],
+        text = dbRow[Messages.text]?:"",
         date = convertDate(dbRow[Messages.date]),
         isFromMe = dbRow[Messages.isFromMe],
         contact = contacts.lookup(dbRow[Handles.contactInfo]),

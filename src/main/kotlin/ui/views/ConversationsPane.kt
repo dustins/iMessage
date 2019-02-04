@@ -14,7 +14,7 @@ class ConversationsPane : View("Conversations") {
     }
 
     override val root = vbox {
-        prefWidth = 295.0
+        prefWidth = 275.0
         listview(controller.conversations) {
             cellFormat {
                 graphic = ConversationCard(it).root

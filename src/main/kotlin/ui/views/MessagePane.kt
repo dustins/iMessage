@@ -2,9 +2,7 @@ package ui.views
 
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
-import model.Contact
-import model.displayName
-import model.lookup
+import javafx.scene.text.FontWeight
 import tornadofx.*
 import ui.controllers.MessagesController
 
@@ -17,10 +15,13 @@ class MessagePane : View("Messages") {
         hbox {
             label(controller.displayName) {
                 style {
-                    fontSize = 24.px
+                    fontSize = 18.px
                     fontFamily = "Helvetica"
+                    fontWeight = FontWeight.BOLD
                 }
+                paddingAll = 3.0
             }
+            prefHeight = 50.0
             alignment = Pos.CENTER
         }
         listview(controller.messageList) {
@@ -29,8 +30,5 @@ class MessagePane : View("Messages") {
             }
             vgrow = Priority.ALWAYS
         }
-
-        paddingAll = 10.0
-        spacing = 4.0
     }
 }

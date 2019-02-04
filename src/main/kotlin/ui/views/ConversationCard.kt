@@ -19,12 +19,12 @@ class ConversationCard(private val conversation: Conversation) : View("Conversat
             paddingAll = 5.0
         }
         vbox {
-            prefWidth = 200.0
+            prefWidth = 180.0
             paddingLeft = 5.0
             hbox {
                 label(conversation.displayName()) {
                     alignment = Pos.TOP_LEFT
-                    minWidth = 130.0
+                    minWidth = 110.0
                     isWrapText = false
                     textOverrun = OverrunStyle.ELLIPSIS
                     style {
@@ -41,7 +41,11 @@ class ConversationCard(private val conversation: Conversation) : View("Conversat
                     }
                 }
             }
-            label(conversation.lastSentMessage.text ?: "") {
+            label {
+                text = conversation
+                    .lastSentMessage
+                    .text
+                    .replace(Regex("[\n\t\r]"), " ")
                 paddingTop = 5.0
                 textOverrun = OverrunStyle.ELLIPSIS
             }

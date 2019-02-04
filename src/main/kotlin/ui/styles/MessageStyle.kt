@@ -20,6 +20,7 @@ class MessageStyle : Stylesheet() {
             borderRadius += box(5.px)
             padding = box(5.px)
             maxWidth = 300.px
+            backgroundColor += Color.TRANSPARENT
         }
         fromMe {
             alignment = Pos.CENTER_RIGHT
