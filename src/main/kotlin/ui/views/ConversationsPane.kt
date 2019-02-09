@@ -11,10 +11,6 @@ class ConversationsPane : View("Conversations") {
     private val messageController: MessagesController by inject()
     private val controller: ConversationController by inject()
 
-    init {
-        controller.loadConversations()
-    }
-
     override val root = stackpane {
         prefWidth = 275.0
         listview(controller.conversations) {
