@@ -1,5 +1,6 @@
 package ui.viewmodels
 
+import org.sqlite.SQLiteErrorCode
 import org.sqlite.SQLiteException
 import tornadofx.ItemViewModel
 import tornadofx.ValidationContext
@@ -16,13 +17,19 @@ class SettingsViewModel : ItemViewModel<SettingsModel>() {
 }
 
 fun validateDB(context: ValidationContext, filename: String?): ValidationMessage? {
-    when {
-        filename.isNullOrBlank() -> return context.error("Cannot be blank")
-        !File(filename).exists() -> return context.error("File does not exist")
-        !File(filename).isFile -> return context.error("Not a file")
-        !File(filename).canRead() -> return context.error("Permission Denied")
+    return when {
+        filename.isNullOrBlank() -> context.error("Cannot be blank")
+        !File(filename).exists() -> context.error("File does not exist")
+        !File(filename).isFile -> context.error("Not a file")
+        !File(filename).canRead() -> context.error("Permission Denied")
+        else -> when (val code = canConnect(filename)) {
+            SQLiteErrorCode.SQLITE_OK -> context.success()
+            else -> context.error(code.message)
+        }
     }
+}
 
+fun canConnect(filename: String): SQLiteErrorCode {
     // connection.isValid returns "true" even if the file is not a database.
     // Therefore, we must a different approach to test the connection
     Class.forName("org.sqlite.JDBC")
@@ -33,10 +40,9 @@ fun validateDB(context: ValidationContext, filename: String?): ValidationMessage
     } catch (e: SQLiteException) {
         // This is rather lazy, but there are a lot of ways the connection could fail
         // Also, the resultCode messages are better than the exception messages IMO
-        return context.error(e.resultCode.message)
+        return e.resultCode
     }
 
-    return context.success()
+    return SQLiteErrorCode.SQLITE_OK
 }
-
 
