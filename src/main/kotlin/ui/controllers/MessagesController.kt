@@ -8,12 +8,13 @@ import model.Message
 import model.displayName
 import tornadofx.Controller
 import tornadofx.observable
+import ui.viewmodels.SettingsViewModel
 
 class MessagesController : Controller() {
 
     var displayName = SimpleStringProperty()
     val messageList = mutableListOf<Message>().observable()
-    private val settings: SettingsController by inject()
+    private val settings: SettingsViewModel by inject()
     val isLoadingProperty = SimpleBooleanProperty(false)
 
     fun loadConversation(conversation: Conversation) {
@@ -22,7 +23,7 @@ class MessagesController : Controller() {
 
         isLoadingProperty.value = true
         runAsync {
-            fetchMessages(settings.messageDB.valueSafe, conversation)
+            fetchMessages(settings.messageDB.value, conversation)
         } ui {
             messageList.addAll(it)
             isLoadingProperty.value = false
