@@ -27,11 +27,12 @@ fun fetchContacts(addressDB: String): List<Contact> {
 fun mapContact(contacts: MutableMap<Int, Contact>, dbRow: ResultRow) {
     val key = dbRow[Name.id].value
     if (!contacts.containsKey(key)) {
-        contacts[key] = Contact (
+        contacts[key] = Contact(
             firstName = dbRow[Name.firstName],
             lastName = dbRow[Name.lastName],
             email = mutableListOf(),
-            number = mutableListOf()
+            number = mutableListOf(),
+            uid = dbRow[Name.uid].substringBefore(":")
         )
     }
 
@@ -42,4 +43,3 @@ fun mapContact(contacts: MutableMap<Int, Contact>, dbRow: ResultRow) {
         contacts[key]!!.number.add(dbRow[PhoneNumber.fullNumber])
     }
 }
-

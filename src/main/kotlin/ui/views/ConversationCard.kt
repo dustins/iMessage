@@ -2,10 +2,13 @@ package ui.views
 
 import javafx.geometry.Pos
 import javafx.scene.control.OverrunStyle
+import javafx.scene.image.Image
+import javafx.scene.shape.Circle
 import javafx.scene.text.FontWeight
 import model.Conversation
 import model.displayName
 import tornadofx.*
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -13,7 +16,9 @@ import java.time.format.DateTimeFormatter
 class ConversationCard(private val conversation: Conversation) : View("ConversationCard") {
 
     override val root = hbox {
-        imageview("default_avatar.png") {
+        imageview {
+            image = findImage(conversation.contacts.firstOrNull()?.uid)
+            clip = Circle(25.0, 25.0,25.0)
             fitWidth = 50.0
             fitHeight = 50.0
             paddingAll = 5.0
@@ -58,4 +63,11 @@ fun formatDate(date: LocalDateTime): String {
         return date.format(DateTimeFormatter.ofPattern("hh:mm a"))
     }
     return date.format(DateTimeFormatter.ofPattern("M/d/yy"))
+}
+
+fun findImage(uid: String?): Image {
+    val rootDir = "${System.getProperty("user.home")}/Library/Application Support/AddressBook/"
+    val image = File(rootDir).walk().find { it.name == uid }
+
+    return Image(image?.toURI()?.toString() ?: "default_avatar.png")
 }

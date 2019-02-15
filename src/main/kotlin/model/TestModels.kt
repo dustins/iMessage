@@ -25,7 +25,8 @@ fun SampleContact(): Contact {
         firstName = "Jane",
         lastName = "Doe",
         number = mutableListOf("555-867-5309"),
-        email = mutableListOf("jane@gmail.com")
+        email = mutableListOf("jane@gmail.com"),
+        uid = "12345"
     )
 }
 
