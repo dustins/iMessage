@@ -1,19 +1,32 @@
 package ui.viewmodels
 
+import javafx.beans.property.SimpleStringProperty
 import org.sqlite.SQLiteErrorCode
 import org.sqlite.SQLiteException
-import tornadofx.ItemViewModel
-import tornadofx.ValidationContext
-import tornadofx.ValidationMessage
-import tornadofx.toProperty
+import tornadofx.*
 import java.io.File
 import java.sql.DriverManager
 
-data class SettingsModel(val addressBookDB: String? = null, val messageDB: String? = null)
+class Settings {
+    val messageDBProperty = SimpleStringProperty("${System.getProperty("user.home")}/Library/Messages/chat.db")
+    val addressBookDBProperty = SimpleStringProperty(findAddressBook())
+}
 
-class SettingsViewModel : ItemViewModel<SettingsModel>() {
-    val addressBookDB = bind { item?.addressBookDB?.toProperty() }
-    val messageDB = bind { item?.messageDB?.toProperty() }
+class SettingsModel(settings: Settings? = Settings()) : ItemViewModel<Settings>(settings) {
+    val messageDB = bind(Settings::messageDBProperty)
+    val addressBookDB = bind(Settings::addressBookDBProperty)
+}
+
+fun findAddressBook(): String? {
+    val rootDir = "${System.getProperty("user.home")}/Library/Application Support/AddressBook/Sources"
+
+    //For now we'll assume the biggest address book is the one we want.
+    //In the future we'd like to merge all available address books
+    val db = File(rootDir).walk()
+        .filter { it.toString().endsWith("db") }
+        .maxBy { it.length() }
+
+    return db?.path
 }
 
 fun validateDB(context: ValidationContext, filename: String?): ValidationMessage? {
