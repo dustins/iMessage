@@ -15,6 +15,10 @@ class SettingsPane : View("Settings") {
     init {
         model.messageDB.value = "${System.getProperty("user.home")}/Library/Messages/chat.db"
         model.addressBookDB.value = findAddressBook()
+
+        runLater {
+            model.validationContext.validate()
+        }
     }
 
     override val root = form {
