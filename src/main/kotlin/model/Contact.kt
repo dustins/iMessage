@@ -4,7 +4,8 @@ data class Contact(
     val firstName: String?,
     val lastName: String?,
     val number: MutableList<String>,
-    val email: MutableList<String>
+    val email: MutableList<String>,
+    val uid: String?
 )
 
 // TODO Everything below this line is suspect
@@ -24,7 +25,7 @@ fun Contact.displayName(): String {
 
 fun List<Contact>.lookup(s: String?): Contact {
     if (s.isNullOrBlank()) {
-        return Contact(null, null, mutableListOf(), mutableListOf())
+        return Contact(null, null, mutableListOf(), mutableListOf(), null)
     }
     if (s.contains("@")) {
         return findByEmail(s)
@@ -44,7 +45,8 @@ private fun List<Contact>.findByNumber(numToFind: String): Contact {
         firstName = null,
         lastName = null,
         number = mutableListOf(numToFind),
-        email = mutableListOf()
+        email = mutableListOf(),
+        uid = null
     )
 }
 
@@ -60,7 +62,8 @@ private fun List<Contact>.findByEmail(emailToFind: String): Contact {
         firstName = null,
         lastName = null,
         number = mutableListOf(),
-        email = mutableListOf(emailToFind)
+        email = mutableListOf(emailToFind),
+        uid = null
     )
 }
 
