@@ -6,12 +6,12 @@ import javafx.beans.property.SimpleBooleanProperty
 import model.Conversation
 import tornadofx.Controller
 import tornadofx.observable
-import ui.viewmodels.SettingsViewModel
+import ui.viewmodels.SettingsModel
 
 class ConversationController : Controller() {
 
     val conversations = mutableListOf<Conversation>().observable()
-    private val settings: SettingsViewModel by inject()
+    private val settings: SettingsModel by inject()
     val isLoadingProperty = SimpleBooleanProperty(false)
 
     fun loadConversations() {
