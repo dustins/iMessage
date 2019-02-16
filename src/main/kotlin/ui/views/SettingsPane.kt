@@ -11,10 +11,8 @@ class SettingsPane : View("Settings") {
     private val model: SettingsModel by inject()
     private val controller: ConversationController by inject()
 
-    init {
-        runLater {
-            model.validationContext.validate()
-        }
+    override fun onDock() {
+        model.validationContext.validate()
     }
 
     override val root = form {
