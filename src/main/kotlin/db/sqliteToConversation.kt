@@ -10,8 +10,7 @@ fun fetchConversations(messageDB: String, contacts: List<Contact>): List<Convers
 
     val chatIdToContacts = mutableMapOf<Int, MutableList<Contact>>()
     transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
-        addLogger(StdOutSqlLogger)
-
+        registerInterceptor(TimingInterceptor())
         ChatHandleJoin
             .leftJoin(Handles, { ChatHandleJoin.handleID }, { Handles.id })
             .selectAll()
@@ -34,8 +33,7 @@ fun fetchLastMessageByChat(messageDB: String, contacts: List<Contact>): Map<Int,
 
     val messages = mutableMapOf<Int, Message>()
     transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
-        addLogger(StdOutSqlLogger)
-
+        registerInterceptor(TimingInterceptor())
         ChatMessageJoin
             .leftJoin(Messages, { ChatMessageJoin.messageID }, { Messages.id })
             .leftJoin(Handles, { Messages.handleID }, { Handles.id })

@@ -11,8 +11,7 @@ fun fetchContacts(addressDB: String): List<Contact> {
     val contacts = mutableMapOf<Int, Contact>()
 
     transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
-        addLogger(StdOutSqlLogger)
-
+        registerInterceptor(TimingInterceptor())
         Name
             .leftJoin(EmailAddress, { Name.id }, { EmailAddress.owner })
             .leftJoin(PhoneNumber, { Name.id }, { PhoneNumber.owner })

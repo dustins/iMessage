@@ -2,15 +2,16 @@ package utils
 
 import javafx.scene.image.Image
 import model.Message
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.File
 
 
 class ImageLoader {
 
+    private val logger = KotlinLogging.logger{}
+
     companion object {
         private val placeholderImage = Image(ImageLoader::class.java.getResource("/placeholder.jpg").toURI().toString())
-        private val logger = LoggerFactory.getLogger(ImageLoader::class.java)
     }
 
     fun load(filename: String?): Image {

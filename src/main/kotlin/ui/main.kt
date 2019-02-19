@@ -1,5 +1,6 @@
 package ui
 
+import mu.KotlinLogging
 import tornadofx.App
 import tornadofx.View
 import tornadofx.borderpane
@@ -25,5 +26,6 @@ class MainView : View("iMessage") {
 }
 
 fun main(args: Array<String>) {
+    KotlinLogging.logger{}.info("Starting app with args [${args.joinToString()}]")
     launch<Main>(args)
 }
