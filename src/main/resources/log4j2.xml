@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <Properties>
+        <Property name="LOG_PATTERN">%highlight{%d{yyyy-MM-dd HH:mm:ss.SSSZ} [%t|%logger] %-5level %msg%n%throwable}</Property>
+    </Properties>
+
+    <appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+        </Console>
+        <File name="file" fileName="${sys:user.home}/Library/Logs/iMessage/all.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+    </appenders>
+
+    <loggers>
+        <root level="info">
+            <appenderRef ref="stdout" />
+            <appenderRef ref="file" />
+        </root>
+        <Logger name="Exposed" level="info" additivity="false">
+            <appenderRef ref="stdout" />
+            <appenderRef ref="file" />
+        </Logger>
+    </loggers>
+
+</configuration>

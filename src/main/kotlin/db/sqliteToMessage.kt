@@ -12,8 +12,7 @@ fun fetchMessages(messageDB: String, conversation: Conversation): List<Message> 
     Database.connect("jdbc:sqlite:$messageDB", "org.sqlite.JDBC")
 
     return transaction(Connection.TRANSACTION_SERIALIZABLE, 1) {
-        addLogger(StdOutSqlLogger)
-
+        registerInterceptor(TimingInterceptor())
         Messages
             .leftJoin(Handles, { Messages.handleID }, { Handles.id })
             .innerJoin(ChatMessageJoin, { Messages.id }, { ChatMessageJoin.messageID })
