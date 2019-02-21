@@ -6,7 +6,6 @@ import javafx.scene.image.Image
 import javafx.scene.shape.Circle
 import javafx.scene.text.FontWeight
 import model.Conversation
-import model.displayName
 import tornadofx.*
 import java.io.File
 import java.time.LocalDate
@@ -27,7 +26,7 @@ class ConversationCard(private val conversation: Conversation) : View("Conversat
             prefWidth = 180.0
             paddingLeft = 5.0
             hbox {
-                label(conversation.displayName()) {
+                label(conversation.displayName) {
                     alignment = Pos.TOP_LEFT
                     minWidth = 110.0
                     isWrapText = false

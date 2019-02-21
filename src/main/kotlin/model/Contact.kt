@@ -6,21 +6,21 @@ data class Contact(
     val number: MutableList<String>,
     val email: MutableList<String>,
     val uid: String?
-)
-
-// TODO Everything below this line is suspect
-fun Contact.displayName(): String {
-    return if (!this.firstName.isNullOrBlank()) {
-        this.firstName
-    } else if (!this.lastName.isNullOrBlank()) {
-        this.lastName
-    } else if (this.number.isNotEmpty()) {
-        this.number[0]
-    } else if (this.email.isNotEmpty()) {
-        this.email[0]
-    } else {
-        "Unknown"
-    }
+) {
+    val displayName: String
+        get() {
+            return if (!firstName.isNullOrBlank()) {
+                firstName
+            } else if (!lastName.isNullOrBlank()) {
+                lastName
+            } else if (number.isNotEmpty()) {
+                number[0]
+            } else if (email.isNotEmpty()) {
+                email[0]
+            } else {
+                "Unknown"
+            }
+        }
 }
 
 fun List<Contact>.lookup(s: String?): Contact {

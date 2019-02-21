@@ -29,7 +29,7 @@ class MessagePane : View("Messages") {
             }
             listview(controller.messageList) {
                 cellFormat {
-                    graphic = MessageCell(it).root
+                    graphic = MessageCell(it, controller.contacts.size > 1 && !it.isFromMe).root
                 }
                 vgrow = Priority.ALWAYS
             }

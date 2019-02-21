@@ -2,17 +2,14 @@ package ui.views
 
 import javafx.geometry.Pos
 import model.Message
-import model.displayName
 import tornadofx.*
 import ui.styles.MessageStyle
-import utils.ImageLoader
-import utils.hasImage
 
-class MessageCell(message: Message) : View("Message") {
+class MessageCell(message: Message, isShowName: Boolean) : View("Message") {
 
     override val root = vbox {
-        label(message.contact.displayName()) {
-            isManaged = !message.isFromMe
+        label(message.contact.displayName) {
+            isManaged = isShowName
         }
         hbox {
             alignment = if (message.isFromMe) {
@@ -22,8 +19,9 @@ class MessageCell(message: Message) : View("Message") {
             }
 
             label {
-                if (message.hasImage()) {
-                    graphic = imageview(ImageLoader().load(message.attachment.filename)) {
+                if (message.attachment.isImage) {
+                    graphic = imageview {
+                        image = message.attachment.load()
                         fitWidth = 300.0
                         isPreserveRatio = true
                     }
@@ -43,3 +41,5 @@ class MessageCell(message: Message) : View("Message") {
         }
     }
 }
+
+
