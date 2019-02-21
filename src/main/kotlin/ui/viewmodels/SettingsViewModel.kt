@@ -1,6 +1,7 @@
 package ui.viewmodels
 
 import javafx.beans.property.SimpleStringProperty
+import mu.KotlinLogging
 import org.sqlite.SQLiteErrorCode
 import org.sqlite.SQLiteException
 import tornadofx.*
@@ -18,13 +19,19 @@ class SettingsModel(settings: Settings? = Settings()) : ItemViewModel<Settings>(
 }
 
 fun findAddressBook(): String? {
+    val logger = KotlinLogging.logger {}
+
     val rootDir = "${System.getProperty("user.home")}/Library/Application Support/AddressBook/Sources"
+    logger.info("Checking for address book in: $rootDir")
 
     //For now we'll assume the biggest address book is the one we want.
     //In the future we'd like to merge all available address books
     val db = File(rootDir).walk()
         .filter { it.toString().endsWith("db") }
+        .onEach { logger.info("Found candidate address book: $it") }
         .maxBy { it.length() }
+
+    logger.info("Chosen address book db: ${db?.path}")
 
     return db?.path
 }
