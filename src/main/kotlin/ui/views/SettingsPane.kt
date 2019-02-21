@@ -1,5 +1,6 @@
 package ui.views
 
+import javafx.scene.control.ButtonBar
 import javafx.scene.paint.Color
 import tornadofx.*
 import ui.controllers.ConversationController
@@ -30,6 +31,15 @@ class SettingsPane : View("Settings") {
             }
         }
         buttonbar {
+            button("Help", ButtonBar.ButtonData.LEFT) {
+                graphic = imageview("help/help_icon.png") {
+                    fitWidth = 18.0
+                    fitHeight = 18.0
+                }
+                action {
+                    find<Help>().openWindow()
+                }
+            }
             button("Cancel") {
                 action {
                     model.rollback()
