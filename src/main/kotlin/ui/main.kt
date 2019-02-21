@@ -1,19 +1,23 @@
 package ui
 
 import mu.KotlinLogging
-import tornadofx.App
-import tornadofx.View
-import tornadofx.borderpane
-import tornadofx.launch
+import tornadofx.*
 import ui.styles.MessageStyle
 import ui.styles.ScrollbarStyle
 import ui.views.AppMenuBar
 import ui.views.ConversationsPane
 import ui.views.MessagePane
+import ui.views.SettingsPane
 
 class Main : App(MainView::class, MessageStyle::class, ScrollbarStyle::class)
 
 class MainView : View("iMessage") {
+
+    init {
+        runLater {
+            find<SettingsPane>().openWindow()
+        }
+    }
 
     override val root = borderpane {
         top(AppMenuBar::class)
