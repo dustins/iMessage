@@ -31,5 +31,5 @@ fun SampleContact(): Contact {
 }
 
 fun SampleAttachment(): Attachment {
-    return Attachment(null, null)
+    return Attachment(null, "image")
 }

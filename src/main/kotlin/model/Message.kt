@@ -26,12 +26,7 @@ data class Attachment(val filename: String?, val mimeType: String?) {
             return Image("placeholder.jpg")
         }
 
-        val file = File(
-            this.filename.replaceFirst(
-                Regex("^~"),
-                System.getProperty("user.home")
-            )
-        )
+        val file = File(this.filename)
 
         if (!file.exists()) {
             logger.warn("File does not exist: $file")

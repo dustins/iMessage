@@ -31,7 +31,10 @@ fun dbToMessage(dbRow: ResultRow, contacts: List<Contact>): Message {
         isFromMe = dbRow[Messages.isFromMe],
         contact = contacts.lookup(dbRow[Handles.contactInfo]),
         attachment = Attachment(
-            filename = dbRow[Attachments.filename],
+            filename = dbRow[Attachments.filename]?.replaceFirst(
+                Regex("^~"),
+                System.getProperty("user.home")
+            ),
             mimeType = dbRow[Attachments.mimetype]
         )
     )
