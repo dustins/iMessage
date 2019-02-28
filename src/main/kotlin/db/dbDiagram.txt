@@ -1,0 +1,81 @@
+// For use on dbdiagram.io
+
+Table attachment {
+  ROWID int PK
+  filename text
+  mime_type text
+}
+
+Table message_attachment_join {
+  message_id int
+  attachment_id int
+}
+
+
+Table chat_message_join {
+  message_id int
+  chat_id int
+  date long
+}
+
+Table chat_handle_join {
+  chat_id int
+  handle_id int
+}
+
+table handle {
+  ROWID int PK
+  id text
+}
+
+Table message {
+  ROWID int PK
+  text text
+  date long
+  is_from_me bool
+  handle_id int
+}
+
+
+Ref: message.ROWID > chat_message_join.message_id
+
+Ref: message.ROWID > message_attachment_join.message_id
+
+Ref: message.handle_id > chat_handle_join.handle_id
+
+Ref: attachment.ROWID > message_attachment_join.attachment_id
+
+Ref: chat_handle_join.chat_id > chat_message_join.chat_id
+
+Ref: handle.ROWID > message.handle_id
+
+Ref: handle.ROWID > chat_handle_join.handle_id
+
+
+
+
+
+Table zabcdRecord {
+  z_PK int PK
+  zFirstName varchar
+  zLastName varchar
+  zUniqueID varchar
+}
+
+Table zabcdPhoneNumber {
+  zOwner int
+  zFullNumber varchar
+}
+
+Table zabcdEmailAddress {
+  zOwner int
+  zAddressNormalized varchar
+}
+
+Ref: zabcdRecord.z_PK > zabcdPhoneNumber.zOwner
+
+Ref: zabcdRecord.z_PK > zabcdEmailAddress.zOwner
+
+Ref: handle.id > zabcdEmailAddress.zAddressNormalized
+
+Ref: handle.id > zabcdPhoneNumber.zFullNumber
