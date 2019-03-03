@@ -29,6 +29,7 @@ class SettingsPane : View("Settings") {
                     validateDB(this, it)
                 }
             }
+            checkbox("Enabled Plugin", model.isPluginEnabled)
         }
         buttonbar {
             button("Help", ButtonBar.ButtonData.LEFT) {

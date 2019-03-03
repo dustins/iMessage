@@ -1,9 +1,11 @@
 package plugins
 
 import com.sun.xml.internal.txw2.output.IndentingXMLStreamWriter
-import model.Attachment
+import javafx.scene.Node
 import model.SampleAttachment
 import mu.KotlinLogging
+import tornadofx.*
+import ui.events.MessageAddedEvent
 import java.awt.Desktop
 import java.io.BufferedReader
 import java.io.File
@@ -14,20 +16,50 @@ import java.util.zip.ZipOutputStream
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
 
-val logger = KotlinLogging.logger {  }
+val logger = KotlinLogging.logger { }
 
 fun main() {
-    openGoogleEarth(SampleAttachment())
+    openGoogleEarth(SampleAttachment().filename!!)
 }
 
-fun openGoogleEarth(attachment: Attachment) {
-    logger.info("Using Google Earth to open ${attachment.filename}")
+class GoogleEarthPlugin : Component() {
 
-    val image = attachment.filename!!
-    val exif = parseExif(image)
+    private val listener: EventContext.(MessageAddedEvent) -> Unit = {
+        if (it.message.attachment.isImage) {
+            runLater {
+                addButton(it.messageNode, it.message.attachment.filename!!)
+            }
+        }
+    }
+
+    private fun addButton(node: Node, filename: String) {
+        node.button("Earth") {
+            graphic = imageview("earth.png") {
+                fitWidth = 24.0
+                fitHeight = 24.0
+            }
+            action {
+                logger.info(filename)
+            }
+        }
+    }
+
+    fun load() {
+        subscribe(null, listener)
+    }
+
+    fun unload() {
+        unsubscribe(listener)
+    }
+}
+
+fun openGoogleEarth(filename: String) {
+    logger.info("Using Google Earth to open ${filename}")
+
+    val exif = parseExif(filename)
 
     logger.info(exif.toString())
-    val file = createKmz(exif, image)
+    val file = createKmz(exif, filename)
     Desktop.getDesktop().open(file)
 }
 
@@ -74,7 +106,7 @@ fun createKmz(exif: Map<String, Double>, image: String): File {
     writeDoc(exif, kmlFile, copied)
     logger.info("Wrote $kmlFile")
 
-    val kmzFile = createTempFile("imessage",".kmz")
+    val kmzFile = createTempFile("imessage", ".kmz")
     packToZip(tmpdir.path, kmzFile.path)
 
     logger.info("Created $kmzFile")
@@ -83,7 +115,8 @@ fun createKmz(exif: Map<String, Double>, image: String): File {
 }
 
 fun writeDoc(exif: Map<String, Double>, kmlFile: File, imageFile: File) {
-    val writer = IndentingXMLStreamWriter(XMLOutputFactory.newFactory().createXMLStreamWriter(kmlFile.outputStream(), "UTF-8"))
+    val writer =
+        IndentingXMLStreamWriter(XMLOutputFactory.newFactory().createXMLStreamWriter(kmlFile.outputStream(), "UTF-8"))
     writer.document {
         element("kml") {
             attribute("xmlns", "http://www.opengis.net/kml/2.2")
@@ -105,17 +138,19 @@ fun writeDoc(exif: Map<String, Double>, kmlFile: File, imageFile: File) {
                     element("href", "files/${imageFile.name}")
                 }
                 element("ViewVolume") {
-                    element("leftFov", "-${exif.getValue("fov")/2}")
-                    element("rightFov", "${exif.getValue("fov")/2}")
-                    element("bottomFov", "-${20 * exif.getValue("width")/exif.getValue("height")}")
-                    element("topFov", "${20 * exif.getValue("width")/exif.getValue("height")}")
-                    element("near", "${20 * exif.getValue("width")/exif.getValue("height")}")
+                    element("leftFov", "-${exif.getValue("fov") / 2}")
+                    element("rightFov", "${exif.getValue("fov") / 2}")
+                    element("bottomFov", "-${20 * exif.getValue("width") / exif.getValue("height")}")
+                    element("topFov", "${20 * exif.getValue("width") / exif.getValue("height")}")
+                    element("near", "${20 * exif.getValue("width") / exif.getValue("height")}")
                 }
                 element("Point") {
-                    element("Coordinates",
+                    element(
+                        "Coordinates",
                         "${exif.getValue("lon")}," +
                                 "${exif.getValue("lat")}," +
-                                "${exif.getValue("alt")}")
+                                "${exif.getValue("alt")}"
+                    )
                 }
             }
         }
@@ -129,8 +164,7 @@ fun packToZip(sourceDirPath: String, zipFilePath: String) {
 
     val zipFile = Files.createFile(Paths.get(zipFilePath))
 
-    ZipOutputStream(Files.newOutputStream(zipFile)).use {
-            stream ->
+    ZipOutputStream(Files.newOutputStream(zipFile)).use { stream ->
         val sourceDir = Paths.get(sourceDirPath)
         Files.walk(sourceDir).filter { path -> !Files.isDirectory(path) }.forEach { path ->
             val zipEntry = ZipEntry(path.toString().substring(sourceDir.toString().length + 1))

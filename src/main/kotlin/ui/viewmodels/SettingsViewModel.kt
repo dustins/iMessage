@@ -1,37 +1,48 @@
 package ui.viewmodels
 
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
-import mu.KotlinLogging
 import org.sqlite.SQLiteErrorCode
 import org.sqlite.SQLiteException
-import tornadofx.*
+import plugins.GoogleEarthPlugin
+import tornadofx.ItemViewModel
+import tornadofx.ValidationContext
+import tornadofx.ValidationMessage
 import java.io.File
 import java.sql.DriverManager
 
 class Settings {
     val messageDBProperty = SimpleStringProperty("${System.getProperty("user.home")}/Library/Messages/chat.db")
     val addressBookDBProperty = SimpleStringProperty(findAddressBook())
+    val isPluginEnabledProperty = SimpleBooleanProperty()
 }
 
 class SettingsModel(settings: Settings? = Settings()) : ItemViewModel<Settings>(settings) {
     val messageDB = bind(Settings::messageDBProperty)
     val addressBookDB = bind(Settings::addressBookDBProperty)
+    val isPluginEnabled = bind(Settings::isPluginEnabledProperty)
+
+    private val plugin = GoogleEarthPlugin()
+
+    override fun onCommit() {
+        super.onCommit()
+        if (isPluginEnabled.value) {
+            plugin.unload()
+            plugin.load()
+        } else {
+            plugin.unload()
+        }
+    }
 }
 
 fun findAddressBook(): String? {
-    val logger = KotlinLogging.logger {}
-
     val rootDir = "${System.getProperty("user.home")}/Library/Application Support/AddressBook/Sources"
-    logger.info("Checking for address book in: $rootDir")
 
     //For now we'll assume the biggest address book is the one we want.
     //In the future we'd like to merge all available address books
     val db = File(rootDir).walk()
         .filter { it.toString().endsWith("db") }
-        .onEach { logger.info("Found candidate address book: $it") }
         .maxBy { it.length() }
-
-    logger.info("Chosen address book db: ${db?.path}")
 
     return db?.path
 }
@@ -65,4 +76,3 @@ fun canConnect(filename: String): SQLiteErrorCode {
 
     return SQLiteErrorCode.SQLITE_OK
 }
-

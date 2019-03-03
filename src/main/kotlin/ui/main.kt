@@ -32,4 +32,5 @@ class MainView : View("iMessage") {
 fun main(args: Array<String>) {
     KotlinLogging.logger{}.info("Starting app with args [${args.joinToString()}]")
     launch<Main>(args)
+    KotlinLogging.logger{}.info("Stopping app")
 }

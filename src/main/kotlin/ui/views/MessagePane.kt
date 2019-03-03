@@ -6,6 +6,7 @@ import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.*
 import ui.controllers.MessagesController
+import ui.events.MessageAddedEvent
 
 
 class MessagePane : View("Messages") {
@@ -30,6 +31,7 @@ class MessagePane : View("Messages") {
             listview(controller.messageList) {
                 cellFormat {
                     graphic = MessageCell(it, controller.contacts.size > 1 && !it.isFromMe).root
+                    fire(MessageAddedEvent(this.graphic, it))
                 }
                 vgrow = Priority.ALWAYS
             }
