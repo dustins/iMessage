@@ -6,6 +6,7 @@ import model.SampleAttachment
 import mu.KotlinLogging
 import tornadofx.*
 import ui.events.MessageAddedEvent
+import ui.plugin.MessagePlugin
 import java.awt.Desktop
 import java.io.BufferedReader
 import java.io.File
@@ -22,18 +23,18 @@ fun main() {
     openGoogleEarth(SampleAttachment().filename!!)
 }
 
-class GoogleEarthPlugin : Component() {
+class GoogleEarthPlugin : MessagePlugin() {
 
-    private val listener: EventContext.(MessageAddedEvent) -> Unit = {
-        if (it.message.attachment.isImage) {
+    override fun onMessageReceived(event: MessageAddedEvent) {
+        if (event.message.attachment.isImage) {
             runLater {
-                addButton(it.messageNode, it.message.attachment.filename!!)
+                addButton(event.messageNode, event.message.attachment.filename!!)
             }
         }
     }
 
     private fun addButton(node: Node, filename: String) {
-        node.button("Earth") {
+        node.button {
             graphic = imageview("earth.png") {
                 fitWidth = 24.0
                 fitHeight = 24.0
@@ -42,14 +43,6 @@ class GoogleEarthPlugin : Component() {
                 logger.info(filename)
             }
         }
-    }
-
-    fun load() {
-        subscribe(null, listener)
-    }
-
-    fun unload() {
-        unsubscribe(listener)
     }
 }
 
